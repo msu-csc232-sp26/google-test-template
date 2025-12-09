@@ -1,0 +1,26 @@
+{
+  "name": "C++ Dev Container",
+  "image": "mcr.microsoft.com/devcontainers/cpp:ubuntu-24.04",
+  "features": {
+    "ghcr.io/devcontainers-community/features/llvm:3": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/rocker-org/devcontainer-features/apt-packages:1": {
+      "packages": "build-essential,doxygen,mscgen,dia,graphviz,valgrind,gdbserver,valgrind-mpi,clangd,git-lfs",
+      "upgradePackages": true
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "zsh",
+        "editor.formatOnSave": true,
+        "editor.formatOnSaveMode": "file"
+      },
+      "extensions": [
+        "ms-vscode.cpptools",
+        "ms-vscode.cmake-tools"
+      ]
+    }
+  }
+  // "postCreateCommand": "sudo apt-get update && sudo apt-get install -y build-essential doxygen mscgen dia graphviz valgrind gdbserver valgrind-mpi clangd git-lfs"
+}

@@ -1,0 +1,56 @@
+name: Autograding with Linter and Unit Tests
+'on':
+  - push
+permissions:
+  checks: write
+  actions: read
+  contents: read
+
+env:
+  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+  BUILD_TYPE: Debug
+
+jobs:
+  cpp-linter:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cpp-linter/cpp-linter-action@v2
+        id: linter
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          version: '18'
+          style: 'file'
+          tidy-checks: '' # Set to empty string to use .clang-tidy config file.
+          step-summary: true
+          extra-args: '-std=c++20 -I./include -I/usr/include/c++/14 -Wall'
+          thread-comments: ${{ github.event_name == 'pull_request' && 'update' }}
+          files-changed-only: false
+          ignore: '.github|build|src/test/cpp|include/testing'
+      - name: Quick check
+        run: ls -l /usr/bin/clang*
+      - name: Fail fast?!
+        if: steps.linter.outputs.checks-failed > 0
+        run: |
+          echo "Some linter checks failed. ${{ steps.linter.outputs.checks-failed }}"
+          exit 1
+  run-autograding-tests:
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-classroom[bot]'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Configure cmake
+        # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
+        # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
+        run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+      - name: Build
+        # Build your program with the given configuration
+        run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+      - name: Test
+        working-directory: ${{github.workspace}}/build
+        # Execute tests defined by the CMake configuration.
+        # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
+        run: ctest --extra-verbose -C ${{env.BUILD_TYPE}}
