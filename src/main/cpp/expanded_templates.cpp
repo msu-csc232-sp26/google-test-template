@@ -1,5 +1,5 @@
 /** CSC232 - Data Structures
- * Missouri State University, Fall 2025
+ * Missouri State University, Spring 2026
  *
  * @file    expanded_templates.cpp
  * @author  Jim Daehn <jdaehn@missouristate.edu>
@@ -31,7 +31,7 @@
  * @version 1.0.0
  * @date    5/29/25
  *
- * @copyright Copyright (c) 2025 James R. Daehn. All rights reserved.
+ * @copyright Copyright (c) 2026 James R. Daehn. All rights reserved.
  */
 
 #include "csc232.h" // usually used to conditional declare based on current task

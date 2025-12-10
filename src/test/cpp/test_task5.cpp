@@ -1,15 +1,14 @@
-
 /**
  * CSC232 - Data Structures
- * Missouri State University, Fall 2025
+ * Missouri State University, Spring 2026
  *
  * @file      test_task5.cpp
  * @authors   Jim Daehn <jdaehn@missouristate.edu>
  * @brief     Google Test implementation for task 5 activities.
  */
 
+#include "base_test_fixture.h"
 #include "csc232.h"
-#include "testing/base_test_fixture.h"
 #include <gtest/gtest.h>
 
 /**
@@ -37,5 +36,4 @@ namespace csc232
         SUCCEED( );
     }
 #endif // TEST_TASK5
-
 } // end namespace

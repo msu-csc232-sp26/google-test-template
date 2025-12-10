@@ -1,6 +1,6 @@
 /**
  * CSC232 - Data Structures
- * Missouri State University, Fall 2025
+ * Missouri State University, Spring 2026
  *
  * @file    main.cpp
  * @author  Jim Daehn <jdaehn@missouristate.edu>
@@ -8,7 +8,7 @@
  * @version 1.0.0
  * @date    01/01/2025
  *
- * @copyright Copyright (c) 2025 James R. Daehn
+ * @copyright Copyright (c) 2026 James R. Daehn
  */
 
 #include <cstdlib>

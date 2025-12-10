@@ -1,6 +1,6 @@
 /**
  * CSC232 - Data Structures
- * Missouri State University, Fall 2025
+ * Missouri State University, Spring 2026
  *
  * @file    csc232.h
  * @author  Jim Daehn <jdaehn@missouristate.edu>
@@ -8,7 +8,7 @@
  * @version 1.0.0
  * @date    01/01/2025
  *
- * @copyright Copyright (c) 2025 James R. Daehn
+ * @copyright Copyright (c) 2026 James R. Daehn
  */
 
 #ifndef MSU_CSC232_H
@@ -70,13 +70,15 @@ namespace csc232
 
         std::uniform_int_distribution< int > dist( 0, DISTRIBUTION_RANGE );
 
-        const auto dash = std::vector{ false, false, false, false, true, false, true, false,
-                                       true, false, true, false, false, false, false, false };
+        const auto dash = std::vector{
+            false, false, false, false, true, false, true, false,
+            true, false, true, false, false, false, false, false };
 
         auto uuid = std::string{ };
         for ( bool dash_location : dash )
         {
-            const std::vector uuid_alphabet = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
+            const std::vector uuid_alphabet = {
+                '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
 
             if ( dash_location )
             {

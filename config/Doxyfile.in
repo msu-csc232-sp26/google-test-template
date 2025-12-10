@@ -54,7 +54,7 @@ PROJECT_NUMBER         = 01
 # for a project that appears at the top of each page and should give viewer a
 # quick idea about the purpose of the project. Keep the description short.
 
-PROJECT_BRIEF          = "CSC232 - Data Structures, Missouri State University, Fall 2025"
+PROJECT_BRIEF          = "CSC232 - Data Structures, Missouri State University, Spring 2026"
 
 # With the PROJECT_LOGO tag one can specify a logo or an icon that is included
 # in the documentation. The maximum height of the logo should not exceed 55
