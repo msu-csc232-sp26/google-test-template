@@ -14,7 +14,7 @@
 #include <cstdlib>
 #include <iostream>
 
-auto main() -> int
+auto main( ) -> int
 {
     std::cout << "Main target" << std::endl;
     return EXIT_SUCCESS;

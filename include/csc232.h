@@ -52,7 +52,8 @@ using std::setw;
 /**
  * @brief Common namespace for CSC232 identifiers.
  */
-namespace csc232 {
+namespace csc232
+{
     // Add any user-defined functions prescribed in your assignment below
 
     // DO NOT Modify anything below this line
@@ -61,29 +62,30 @@ namespace csc232 {
      * @brief Generate a quasi-random UUID.
      * @return A string representation of a quasi-random UUID.
      */
-    inline auto generate_uuid() -> std::string {
-        static constexpr auto DISTRIBUTION_RANGE{15};
+    inline auto generate_uuid( ) -> std::string
+    {
+        static constexpr auto DISTRIBUTION_RANGE{ 15 };
         static std::random_device random_device;
-        static std::mt19937 random_number_generator(random_device());
+        static std::mt19937 random_number_generator( random_device( ) );
 
-        std::uniform_int_distribution<int> dist(0, DISTRIBUTION_RANGE);
+        std::uniform_int_distribution< int > dist( 0, DISTRIBUTION_RANGE );
 
         const auto dash = std::vector{
             false, false, false, false, true, false, true, false,
-            true, false, true, false, false, false, false, false
-        };
+            true, false, true, false, false, false, false, false };
 
-        auto uuid = std::string{};
-        for (bool dash_location: dash) {
+        auto uuid = std::string{ };
+        for ( bool dash_location : dash )
+        {
             const std::vector uuid_alphabet = {
-                '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'
-            };
+                '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
 
-            if (dash_location) {
+            if ( dash_location )
+            {
                 uuid += "-";
             }
-            uuid += uuid_alphabet[dist(random_number_generator)];
-            uuid += uuid_alphabet[dist(random_number_generator)];
+            uuid += uuid_alphabet[ dist( random_number_generator ) ];
+            uuid += uuid_alphabet[ dist( random_number_generator ) ];
         }
         return uuid;
     }

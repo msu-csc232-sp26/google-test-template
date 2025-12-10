@@ -25,7 +25,7 @@
 // Placeholder for task 3 demo code
 #endif
 
-auto main() -> int
+auto main( ) -> int
 {
     std::cout << "Demo target" << std::endl;
     return EXIT_SUCCESS;
