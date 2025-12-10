@@ -1,6 +1,6 @@
 /**
  * CSC232 - Data Structures
- * Missouri State University, Fall 2025
+ * Missouri State University, Spring 2026
  *
  * @file      base_test_fixture.h
  * @authors   Jim Daehn <jdaehn@missouristate.edu>

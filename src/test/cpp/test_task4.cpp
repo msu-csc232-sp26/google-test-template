@@ -1,7 +1,6 @@
-
 /**
  * CSC232 - Data Structures
- * Missouri State University, Fall 2025
+ * Missouri State University, Spring 2026
  *
  * @file      test_task4.cpp
  * @authors   Jim Daehn <jdaehn@missouristate.edu>
@@ -9,7 +8,7 @@
  */
 
 #include "csc232.h"
-#include "testing/base_test_fixture.h"
+#include "base_test_fixture.h"
 #include <gtest/gtest.h>
 
 /**
@@ -25,17 +24,16 @@ namespace csc232
     {
     };
 
-    TEST_F( Task4TestFixture, RewriteThisTest )
+    TEST_F(Task4TestFixture, RewriteThisTest)
     {
         std::cout << "Task 4 is ready for evaluation, but this isn't going to validate anything.\n";
-        SUCCEED( );
+        SUCCEED();
     }
 #else
-    TEST( Task4TestSuite, ItIsNotReady )
+    TEST(Task4TestSuite, ItIsNotReady)
     {
         std::cerr << "Task 4 is not ready for evaluation; please toggle the TEST_TASK4 macro to TRUE\n";
-        SUCCEED( );
+        SUCCEED();
     }
 #endif // TEST_TASK4
-
 } // end namespace
