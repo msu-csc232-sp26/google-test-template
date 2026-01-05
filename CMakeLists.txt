@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.16.3)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(IS_HW FALSE)
 
-project(lab-or-hw)
+project(lab02)
 
 option(ENABLE_SANITIZERS "Enable sanitizers in Debug builds" ON)
 
@@ -26,13 +26,13 @@ set(CMAKE_CXX_STANDARD 20)
 set(SRC_MAIN_FILES src/main/cpp/main.cpp
         src/main/cpp/expanded_templates.cpp)
 set(SRC_DEMO_FILES src/main/cpp/demo.cpp
+        src/main/cpp/expanded_templates.cpp
+)
+set(SRC_UNIT_TESTS src/test/cpp/unit_tests.cpp
         src/main/cpp/expanded_templates.cpp)
-set(SRC_TEST_TASK1 src/test/cpp/test_task1.cpp
-        src/main/cpp/expanded_templates.cpp)
-set(SRC_TEST_TASK2 src/test/cpp/test_task2.cpp
-        src/main/cpp/expanded_templates.cpp)
-set(SRC_TEST_TASK3 src/test/cpp/test_task3.cpp
-        src/main/cpp/expanded_templates.cpp)
+
+add_executable(main ${SRC_MAIN_FILES})
+add_executable(demo ${SRC_DEMO_FILES})
 
 # Setup Google Test
 set(GOOGLE_TEST_ARCHIVE "v1.17.0")
@@ -41,56 +41,28 @@ FetchContent_Declare(
         googletest
         URL https://github.com/google/googletest/archive/refs/tags/${GOOGLE_TEST_ARCHIVE}.zip
 )
-# For Windows: Prevent overriding the parent project's compiler/linker settings
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
-
 enable_testing()
-
-add_executable(main ${SRC_MAIN_FILES})
-add_executable(demo ${SRC_DEMO_FILES})
-add_executable(test_task1 ${SRC_TEST_TASK1})
-add_executable(test_task2 ${SRC_TEST_TASK2})
-add_executable(test_task3 ${SRC_TEST_TASK3})
-
-# Now simply link against gtest or gtest_main as needed.
-target_link_libraries(test_task1 GTest::gtest_main)
-target_link_libraries(test_task2 GTest::gtest_main)
-target_link_libraries(test_task3 GTest::gtest_main)
-
 include(GoogleTest)
-gtest_discover_tests(test_task1)
-gtest_discover_tests(test_task2)
-gtest_discover_tests(test_task3)
+add_executable(unit_tests ${SRC_UNIT_TESTS})
+target_link_libraries(unit_tests PRIVATE GTest::gtest) # NOTE: not gtest_main
+gtest_discover_tests(unit_tests)
 
 target_include_directories(main PUBLIC ${CMAKE_CURRENT_LIST_DIR}/include ${CMAKE_CURRENT_LIST_DIR}/src/main/cpp)
 target_include_directories(demo PUBLIC ${CMAKE_CURRENT_LIST_DIR}/include ${CMAKE_CURRENT_LIST_DIR}/src/main/cpp)
-target_include_directories(test_task1 PUBLIC ${CMAKE_CURRENT_LIST_DIR}/include ${CMAKE_CURRENT_LIST_DIR}/src/main/cpp)
-target_include_directories(test_task2 PUBLIC ${CMAKE_CURRENT_LIST_DIR}/include ${CMAKE_CURRENT_LIST_DIR}/src/main/cpp)
-target_include_directories(test_task3 PUBLIC ${CMAKE_CURRENT_LIST_DIR}/include ${CMAKE_CURRENT_LIST_DIR}/src/main/cpp)
+target_include_directories(unit_tests PUBLIC ${CMAKE_CURRENT_LIST_DIR}/include ${CMAKE_CURRENT_LIST_DIR}/src/main/cpp)
 
 # add custom commands that copy data input files to target working directories
 add_custom_command(TARGET main POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_LIST_DIR}/src/main/resources/main_data.txt ${CMAKE_CURRENT_BINARY_DIR})
 add_custom_command(TARGET demo POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_LIST_DIR}/src/main/resources/demo_data.txt ${CMAKE_CURRENT_BINARY_DIR})
-add_custom_command(TARGET test_task1 POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_LIST_DIR}/src/test/resources/task1_test_data.txt ${CMAKE_CURRENT_BINARY_DIR})
-add_custom_command(TARGET test_task2 POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_LIST_DIR}/src/test/resources/task2_test_data.txt ${CMAKE_CURRENT_BINARY_DIR})
-add_custom_command(TARGET test_task3 POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_LIST_DIR}/src/test/resources/task3_test_data.txt ${CMAKE_CURRENT_BINARY_DIR})
+add_custom_command(TARGET unit_tests POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_LIST_DIR}/src/test/resources/task1_test_data.txt ${CMAKE_CURRENT_BINARY_DIR})
+add_custom_command(TARGET unit_tests POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_LIST_DIR}/src/test/resources/task2_test_data.txt ${CMAKE_CURRENT_BINARY_DIR})
+add_custom_command(TARGET unit_tests POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_LIST_DIR}/src/test/resources/task3_test_data.txt ${CMAKE_CURRENT_BINARY_DIR})
 
 if (IS_HW)
-    set(SRC_TASK4_TEST_FILES src/test/cpp/test_task4.cpp
-            src/main/cpp/expanded_templates.cpp)
-    set(SRC_TASK5_TEST_FILES src/test/cpp/test_task5.cpp
-            src/main/cpp/expanded_templates.cpp)
-    add_executable(test_task4 ${SRC_TASK4_TEST_FILES})
-    add_executable(test_task5 ${SRC_TASK5_TEST_FILES})
-    target_link_libraries(test_task4 GTest::gtest_main)
-    target_link_libraries(test_task5 GTest::gtest_main)
-    gtest_discover_tests(test_task4)
-    gtest_discover_tests(test_task5)
-    target_include_directories(test_task4 PUBLIC ${CMAKE_CURRENT_LIST_DIR}/include ${CMAKE_CURRENT_LIST_DIR}/src/main/cpp)
-    target_include_directories(test_task5 PUBLIC ${CMAKE_CURRENT_LIST_DIR}/include ${CMAKE_CURRENT_LIST_DIR}/src/main/cpp)
-    add_custom_command(TARGET test_task4 PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_LIST_DIR}/src/test/resources/task4_test_data.txt ${CMAKE_CURRENT_BINARY_DIR})
-    add_custom_command(TARGET test_task5 PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_LIST_DIR}/src/test/resources/task5_test_data.txt ${CMAKE_CURRENT_BINARY_DIR})
+    add_custom_command(TARGET unit_tests PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_LIST_DIR}/src/test/resources/task4_test_data.txt ${CMAKE_CURRENT_BINARY_DIR})
+    add_custom_command(TARGET unit_tests PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_LIST_DIR}/src/test/resources/task5_test_data.txt ${CMAKE_CURRENT_BINARY_DIR})
 endif ()
 
 # first we can indicate the documentation build as an option and set it to OFF by default
