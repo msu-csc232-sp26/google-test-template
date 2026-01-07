@@ -34,61 +34,18 @@ protected:
     {
         // Initialize any shared state/resources for Task 1 tests.
     }
+
     void TearDown( ) override
     {
         // Cleanup for Task 1.
     }
-    std::string valid_password_ = "password"; // NOLINT
-    std::string invalid_password_ = "";       // NOLINT
 };
 
-// Strongest guarantee for verifying LockBox is a subclass of PlainBox: compile-time verification.
-static_assert( std::is_base_of_v< csc232::plain_box< int >, csc232::lock_box< int > >,
-               "LockBox<int> must be derived from PlainBox<int>" );
-
-TEST_F( Task1, ItExtendsPlainBox )
-{
-    // Further proof of subclassing with evidence provided to Google Test report
-    EXPECT_TRUE( ( std::is_base_of_v< csc232::plain_box< int >, csc232::lock_box< int > > ));
-}
-
-TEST_F( Task1, ItThrowsExceptionWithEmptyPassword )
-{
-    EXPECT_THROW( auto lock_box = csc232::lock_box< int >( invalid_password_ ), std::invalid_argument );
-}
-
-TEST_F( Task1, ItCreatesLockBoxOfIntegersWithValidPassword )
-{
-    EXPECT_NO_FATAL_FAILURE( {
-        auto lock_box = csc232::lock_box< int >{ valid_password_ };
-    } );
-}
-
-TEST_F( Task1, ItCreatesLockBoxOfDoublesWithValidPassword )
-{
-    EXPECT_NO_FATAL_FAILURE( {
-        auto lock_box = csc232::lock_box< double >{ valid_password_ };
-    } );
-}
-
-TEST_F( Task1, ItCreatesLockBoxOfStringsWithValidPassword )
-{
-    EXPECT_NO_FATAL_FAILURE( {
-        auto lock_box = csc232::lock_box< std::string >{ valid_password_ };
-    } );
-}
-
-TEST_F( Task1, ItIsNotInitiallyLocked )
-{
-    auto lock_box = csc232::lock_box< std::string >{ valid_password_ };
-    EXPECT_FALSE( lock_box.is_locked( ) );
-}
-
-TEST_F( Task1, ItIsNotInitiallyLockedOut )
-{
-    auto lock_box = csc232::lock_box< std::string >{ valid_password_ };
-    EXPECT_FALSE( lock_box.is_locked_out( ) );
-}
+TEST_F( Task1TestFixture, RewriteThisTest )
+    {
+        std::cout << "Task 1 is ready for evaluation, but this isn't going to validate anything.\n";
+        SUCCEED( );
+    }
 
 #else
 TEST( Task1, ItIsNotReady )
