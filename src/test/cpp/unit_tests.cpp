@@ -209,7 +209,7 @@ static void PrintPerTaskSummaryAndScore( )
     for ( const auto &suiteSummary : summaries )
     {
         // Recommend naming fixtures exactly "Task1", "Task2", "Task3"
-        if ( suiteSummary.name == "Task1" || suiteSummary.name == "Task2" || suiteSummary.name == "Task3" )
+        if ( suiteSummary.name == "Task1" || suiteSummary.name == "Task2" || suiteSummary.name == "Task3" || suiteSummary.name == "Task4" || suiteSummary.name == "Task5" )
         {
             std::cout << "Task: " << suiteSummary.name << "\n"
                       << "  Passing: " << suiteSummary.passed << "\n"
