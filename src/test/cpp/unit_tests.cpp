@@ -14,9 +14,6 @@
 // unit_tests.cpp
 #include "base_test_fixture.h"
 #include "csc232.h"
-#if TEST_TASK_1
-#include "lock_box.h"
-#endif
 #include "gtest/gtest.h"
 #include <iomanip>
 #include <iostream>
@@ -42,10 +39,10 @@ protected:
 };
 
 TEST_F( Task1TestFixture, RewriteThisTest )
-    {
-        std::cout << "Task 1 is ready for evaluation, but this isn't going to validate anything.\n";
-        SUCCEED( );
-    }
+{
+    std::cout << "Task 1 is ready for evaluation, but this isn't going to validate anything.\n";
+    SUCCEED( );
+}
 
 #else
 TEST( Task1, ItIsNotReady )
@@ -67,65 +64,15 @@ protected:
 };
 
 // --- Replace these with your real Task 2 unit tests ---
-TEST_F( Task2, ItGetsDefaultItemWithValidPassword )
+TEST_F( Task2, RewriteThisTest )
 {
-    const auto box = csc232::lock_box< int >( "password" );
-    auto item = box.get_item( );
-    EXPECT_EQ( item, int{ } );
+    std::cout << "Task 2 is ready for evaluation, but this isn't going to validate anything.\n";
+    SUCCEED( );
 }
-
-TEST_F( Task2, ItThrowsExceptionWhenTryingToRetrieveLockedItem )
-{
-    auto box = csc232::lock_box< int >( "password" );
-    box.lock( );
-    EXPECT_THROW( const auto item = box.get_item( ), std::logic_error );
-}
-
-TEST_F( Task2, ItCanUpdateItemWhenNotLocked )
-{
-    auto box = csc232::lock_box< int >( "password" );
-    constexpr auto expected{ 1 };
-
-    box.set_item( expected );
-    const auto actual = box.get_item( );
-    EXPECT_EQ( expected, actual );
-}
-
-TEST_F( Task2, ItCannotUpdateItemWhenLocked )
-{
-    auto box = csc232::lock_box< int >( "password" );
-    constexpr auto expected{ 1 };
-    auto actual = int{ };
-    box.lock( );
-    try
-    {
-        box.set_item( expected );
-        actual = box.get_item( );
-    }
-    catch ( std::logic_error )
-    {
-        EXPECT_NE( expected, actual );
-        EXPECT_EQ( int{ }, actual );
-    }
-}
-
-TEST_F( Task2, ItWritesErrorMessagesToStandardErrorOutputStream )
-{
-    std::ostringstream capture;
-    {
-        csc232::ScopedCerrRedirect guard( capture );
-        auto box = csc232::lock_box< int >( "password" );
-        box.lock( );
-        constexpr auto item{ 1 };
-        box.set_item( item );
-    }
-    EXPECT_EQ( capture.str( ), "Attempt to add item to locked box.\n" );
-}
-
 #else
 TEST( Task2, ItIsNotReady )
 {
-    std::cerr << "Task 2 is not ready for evaluation; please toggle the TEST_TASK1 macro to TRUE\n";
+    std::cerr << "Task 2 is not ready for evaluation; please toggle the TEST_TASK2 macro to TRUE\n";
     SUCCEED( );
 }
 #endif // TEST_TASK_2
@@ -142,63 +89,71 @@ protected:
 };
 
 // --- Replace these with your real Task 3 unit tests ---
-TEST_F( Task3, ItUnlocksWithTheCorrectPassword )
-{
-    auto box = csc232::lock_box< int >( "password" );
-    auto constexpr expected{ 1 };
-    auto actual = int{ };
-    box.set_item( expected );
-    box.lock( );
-    const auto is_unlocked = box.unlock( "password" );
-    try
-    {
-        actual = box.get_item( );
-    }
-    catch ( std::logic_error error )
-    {
-        FAIL( );
-    }
-    EXPECT_TRUE( is_unlocked );
-    EXPECT_FALSE( box.is_locked( ) );
-    EXPECT_FALSE( box.is_locked_out( ) );
-    EXPECT_EQ( expected, actual );
-}
 
-TEST_F( Task3, ItRemainsLockedWhenUsingWrongPassword )
+TEST_F( Task3, RewriteThisTest )
 {
-    auto box = csc232::lock_box< int >( "password" );
-    auto constexpr expected{ 1 };
-    auto actual = int{ };
-    box.set_item( expected );
-    box.lock( );
-    const auto is_unlocked = box.unlock( "this ain't it" );
-    try
-    {
-        actual = box.get_item( );
-    }
-    catch ( std::logic_error error )
-    {
-        EXPECT_NE( expected, actual );
-        EXPECT_TRUE( box.is_locked( ) );
-        EXPECT_FALSE( box.is_locked_out( ) );
-        EXPECT_FALSE( is_unlocked );
-    }
+    std::cout << "Task 3 is ready for evaluation, but this isn't going to validate anything.\n";
+    SUCCEED( );
 }
-
-TEST_F( Task3, ItReportsLockedStatusWhenLocked )
-{
-    auto box = csc232::lock_box< int >( "password" );
-    box.lock( );
-    EXPECT_TRUE( box.is_locked( ) );
-}
-
 #else
 TEST( Task3, ItIsNotReady )
 {
-    std::cerr << "Task 3 is not ready for evaluation; please toggle the TEST_TASK1 macro to TRUE\n";
+    std::cerr << "Task 3 is not ready for evaluation; please toggle the TEST_TASK3 macro to TRUE\n";
     SUCCEED( );
 }
 #endif // TEST_TASK_3
+
+// -----------------------------------------------------------------------------
+// Task 4 Fixture and Tests
+// -----------------------------------------------------------------------------
+#if TEST_TASK_4
+class Task4 : public ::testing::Test
+{
+protected:
+    void SetUp( ) override { }
+    void TearDown( ) override { }
+};
+
+// --- Replace these with your real Task 3 unit tests ---
+
+TEST_F( Task4, RewriteThisTest )
+{
+    std::cout << "Task 4 is ready for evaluation, but this isn't going to validate anything.\n";
+    SUCCEED( );
+}
+#else
+TEST( Task4, ItIsNotReady )
+{
+    std::cerr << "Task 4 is not ready for evaluation; please toggle the TEST_TASK4 macro to TRUE\n";
+    SUCCEED( );
+}
+#endif // TEST_TASK_4
+
+// -----------------------------------------------------------------------------
+// Task 5 Fixture and Tests
+// -----------------------------------------------------------------------------
+#if TEST_TASK_5
+class Task5 : public ::testing::Test
+{
+protected:
+    void SetUp( ) override { }
+    void TearDown( ) override { }
+};
+
+// --- Replace these with your real Task 3 unit tests ---
+
+TEST_F( Task5, RewriteThisTest )
+{
+    std::cout << "Task 5 is ready for evaluation, but this isn't going to validate anything.\n";
+    SUCCEED( );
+}
+#else
+TEST( Task5, ItIsNotReady )
+{
+    std::cerr << "Task 5 is not ready for evaluation; please toggle the TEST_TASK5 macro to TRUE\n";
+    SUCCEED( );
+}
+#endif // TEST_TASK_5
 
 // -----------------------------------------------------------------------------
 // Helper: Print task-by-task summary and compute score
