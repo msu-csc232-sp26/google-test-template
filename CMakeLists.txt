@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.16.3)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(IS_HW FALSE)
 
-project(lab02)
+project(lab-or-hw)
 
 option(ENABLE_SANITIZERS "Enable sanitizers in Debug builds" ON)
 
