@@ -1,0 +1,18 @@
+
+@startuml
+skinparam style strictuml
+
+actor Client
+participant "safe_deposit_box<T>" as Box
+
+Client -> Box : unlock(attempt : std::string_view)
+alt attempt == password_
+  Box -> Box : is_locked_ = false
+  Box -> Box : num_failures_ = 0
+  Box --> Client : true
+else
+  Box -> Box : ++num_failures_
+  Box --> Client : false
+end
+
+@enduml

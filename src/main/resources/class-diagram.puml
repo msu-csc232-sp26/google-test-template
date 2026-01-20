@@ -1,29 +1,90 @@
+
 @startuml
-'https://plantuml.com/class-diagram
-set separator ::
+skinparam style strictuml
 
-hide fields
-skinparam class {
-BackgroundColor PaleGreen
+'==========================
+' Templated Classes
+'==========================
+
+package csc232 <<Folder>> {
+
+    '----------------------
+    ' box<object>
+    '----------------------
+    class "box<object>" as Box <<interface>> {
+        {abstract} + set_item(item : object) : void
+        {abstract} + get_item() : object
+        + {virtual} ~box()
+    }
+
+    '----------------------
+    ' plain_box<object>
+    '----------------------
+    class "plain_box<object>" as PlainBox {
+        - item : object
+
+        + plain_box()
+        + plain_box(initial_item : object)
+        + set_item(an_item : object) : void
+        + get_item() : object
+    }
+
+    Box <|.. PlainBox : implements
+
+    '----------------------
+    ' safe_deposit_box<object>
+    '----------------------
+    class "safe_deposit_box<object>" as SafeDepositBox {
+        - password_ : std::string
+        - is_locked_ : bool
+        - num_failures_ : std::size_t
+
+        + safe_deposit_box(password : std::string)
+        + {virtual} ~safe_deposit_box()
+        + lock() : void
+        + unlock(attempt : std::string_view) : bool
+        + is_locked() : bool
+        + get_item() : object
+        + set_item(item : object) : void
+
+        -- private static helpers --
+        {static} - validate_password(candidate : std::string_view) : void
+        {static} - validate_and_move(candidate : std::string) : std::string
+    }
+
+    PlainBox <|-- SafeDepositBox : extends
 }
 
-namespace csc232 #DDDDDD {
+'==========================
+' File Writer Classes
+'==========================
+
+package csc232 <<Folder>> {
+
+    '----------------------
+    ' file_writer interface
+    '----------------------
+    class file_writer <<interface>> {
+        + {virtual} ~file_writer()
+        {abstract} + open(filename : std::string, mode : ios_base::openmode)
+        {abstract} + write(data : std::string)
+        {abstract} + close()
+        {abstract} + is_open() : bool
+    }
+
+    '----------------------
+    ' stream_file_writer
+    '----------------------
+    class stream_file_writer <<final>> {
+        - file_stream_ : std::ofstream
+
+        + open(filename : std::string, mode : ios_base::openmode) : void
+        + write(data : std::string) : void
+        + close() : void
+        + is_open() : bool
+    }
+
+    file_writer <|.. stream_file_writer : implements
 }
-
-interface csc232::cell<Object> {
-+ ~cell()
-+ {abstract} read() const : Object
-+ {abstract} write( value : const Object& ) : void
-}
-
-csc232::cell <|-- csc232::memory_cell
-
-class csc232::memory_cell<Object> {
-- m_data : Object
-+ read() const : Object
-+ write( value : const Object& ) : void
-}
-
-show memory_cell fields
 
 @enduml

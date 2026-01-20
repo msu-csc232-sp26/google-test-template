@@ -1,0 +1,20 @@
+
+@startuml
+title Activity Diagram: safe_deposit_box<object>::set_item(const object& item)
+
+start
+
+:'set_item(item)' called;
+
+if ("is_locked_ ?") then (yes)
+  :Create stream_file_writer file_writer;
+  :log_error("error.log", file_writer,\n  "Logic error: Attempt to place item in locked safe deposit box. No update occurred.");
+  :throw std::logic_error(\n  "Attempt to update item in locked safe deposit box");
+  end
+else (no)
+  :Call plain_box<object>::set_item(item);
+  stop
+endif
+
+@enduml
+``

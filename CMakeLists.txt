@@ -1,19 +1,8 @@
 cmake_minimum_required(VERSION 3.16.3)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set(IS_HW FALSE)
+set(IS_HW TRUE)
 
-project(lab-or-hw)
-
-option(ENABLE_SANITIZERS "Enable sanitizers in Debug builds" ON)
-
-if (ENABLE_SANITIZERS AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-    if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-        message(STATUS "Sanitizers enabled for Debug build!")
-        set(SANITIZER_FLAGS "-fsanitize=address,undefined,leak -fno-omit-frame-pointer")
-        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${SANITIZER_FLAGS}")
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SANITIZER_FLAGS}")
-    endif ()
-endif ()
+project(hw01)
 
 if (CMAKE_VERSION GREATER_EQUAL "3.24.0")
     cmake_policy(SET CMP0135 NEW)
@@ -24,12 +13,16 @@ set(CMAKE_CXX_STANDARD 20)
 
 # Source sets for targets
 set(SRC_MAIN_FILES src/main/cpp/main.cpp
+        src/main/cpp/stream_file_writer.cpp
         src/main/cpp/expanded_templates.cpp)
 set(SRC_DEMO_FILES src/main/cpp/demo.cpp
         src/main/cpp/expanded_templates.cpp
+        src/main/cpp/stream_file_writer.cpp
 )
 set(SRC_UNIT_TESTS src/test/cpp/unit_tests.cpp
-        src/main/cpp/expanded_templates.cpp)
+        src/main/cpp/expanded_templates.cpp
+        src/main/cpp/stream_file_writer.cpp
+)
 
 add_executable(main ${SRC_MAIN_FILES})
 add_executable(demo ${SRC_DEMO_FILES})
@@ -47,6 +40,7 @@ enable_testing()
 include(GoogleTest)
 add_executable(unit_tests ${SRC_UNIT_TESTS})
 target_link_libraries(unit_tests PRIVATE GTest::gtest) # NOTE: not gtest_main
+target_link_libraries(unit_tests PRIVATE GTest::gmock GTest::gtest)
 gtest_discover_tests(unit_tests)
 
 target_include_directories(main PUBLIC ${CMAKE_CURRENT_LIST_DIR}/include ${CMAKE_CURRENT_LIST_DIR}/src/main/cpp)

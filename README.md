@@ -1,22 +1,22 @@
-# LHWn - Title
+# HW01 - Extending C++ Classes
 
-_A quick blurb or sub-title text_
+This homework assignment continues the box class hierarchy introduced in C++ Interlude 1.
 
 ## Background
 
 Before proceeding with this lab, the student should take the time to read
 
-* this
-* that
-* and the other thing
+* [Appendix A Review of C++ Fundamentals](https://msu.vitalsource.com/reader/books/9780138122782/epubcfi/6/574%5B%3Bvnd.vst.idref%3DP7001018341000000000000000006D88%5D!/4/2%5BP7001018341000000000000000006D88%5D/2/2%5BP7001018341000000000000000006D89%5D/7:9%5Bw%20o%2Cf%20C%5D)
+* [Chapter 1 Data Abstraction: The Walls](https://msu.vitalsource.com/reader/books/9780138122782/epubcfi/6/30%5B%3Bvnd.vst.idref%3DP7001018341000000000000000000784%5D!/4/2%5BP7001018341000000000000000000784%5D/2/2%5BP7001018341000000000000000000785%5D/7:0%5B%2C%20Da%5D)
+* [C++ Interlude 1 C++ Classes](https://msu.vitalsource.com/reader/books/9780138122782/epubcfi/6/46%5B%3Bvnd.vst.idref%3DP70010183410000000000000000009FA%5D!/4/2%5BP70010183410000000000000000009FA%5D/2/2%5BP70010183410000000000000000009FB%5D/7:0%5B%2C%20C%2B%5D)
 
 ## Objective
 
 Upon successful completion of this lab, the student has learned how to
 
-* do this
-* do that
-* do another thing
+* use other libraries in developing a solution
+* extend a C++ class with new behavior
+* override existing inherited behavior of an ancestor class
 
 ## Getting Started
 
@@ -33,38 +33,91 @@ assignment.
 
 This assignment consists of the following tasks:
 
-* Task 1: <TODO: Declare me!>
-* Task 2: <TODO: Declare me!>
-* Task 3: <TODO: Declare me!>
-* Task 4: <TODO: Declare me - or erase me!>
-* Task 5: <TODO: Declare me - or erase me!>
+* Task 1: Define timestamp generator function
+* Task 2: Define error logging function
+* Task 3: Validate password
+* Task 4: Define locking mechanism
+* Task 5: Override inherited methods
 
-Pol, neuter abactor!
+In the end, you will provide some details behind the following class relationships.
 
-### Task 1: <TODO: Declare me!>
+![lab03-class-diagram](src/main/resources/class-diagram.png)
+
+### Task 1: Define timestamp generator function
 
 Enumerated below are the essential steps to completing this task. For a deeper dive before you begin, see
-the [Task 1 Details](task1.md) document.
+the [Task 1 Details](task1.md) document. Also, **before you begin, be sure you have created a branch named `develop`
+within which you will do your work**.
 
-### Task 2: <TODO: Declare me!>
+1. Open the [csc232.h](include/csc232.h) header file and locate the `TODO:  Task 1 - Step 1: Toggle TEST_TASK_1 TO TRUE`
+   comment and update the macro definition as instructed. Remove the `TODO` comment once done.
+2. Still in the `csc232.h` header file, locate the `TODO: Task 1` and implement this function accordingly. See
+   the [Task 1 Details](task1.md) document for appropriate details and guidance.
+3. When you're ready to test your solution, execute the `unit_tests` target to assess the correctness of your solution.
+4. When you are satisfied with the results of the unit tests for this task, stage, commit, and push your changes to
+   GitHub.
+
+### Task 2: Define error logging function
 
 Enumerated below are the essential steps to completing this task. For a deeper dive before you begin, see
 the [Task 2 Details](task2.md) document.
 
-### Task 3: <TODO: Declare me!>
+1. Still in the [csc232.h](include/csc232.h) header file, locate the
+   `TODO:  Task 2 - Step 1: Toggle TEST_TASK_2 TO TRUE`
+   comment and update the macro definition as instructed. Remove the `TODO` comment once done.
+2. Still in the `csc232.h` header file, locate the `TODO: Task 2` and implement this function accordingly. See
+   the [Task 2 Details](task2.md) document for appropriate details and guidance.
+3. When you're ready to test your solution, execute the `unit_tests` target to assess the correctness of your solution.
+4. When you are satisfied with the results of the unit tests for this task, stage, commit, and push your changes to
+   GitHub.
+
+### Task 3: Validate password
 
 Enumerated below are the essential steps to completing this task. For a deeper dive before you begin, see
 the [Task 3 Details](task3.md) document.
 
-### Task 4: <TODO: Declare me!>
+1. Open the [safe_deposit_box.cpp](src/main/cpp/safe_deposit_box.cpp) source file and locate the
+   `TODO:  Task 3 - Step 1: Toggle TEST_TASK_3 TO TRUE` comment and update the macro definition as instructed. Remove
+   the `TODO` comment once done.
+2. Still in the `safe_deposit_box.cpp` source file, locate the `TODO: Task 3` and implement this member function
+   accordingly. See the [Task 3 Details](task3.md) document for appropriate details and guidance.
+3. When you're ready to test your solution, execute the `unit_tests` target to assess the correctness of your solution.
+4. When you are satisfied with the results of the unit tests for this task, stage, commit, and push your changes to
+   GitHub.
+
+### Task 4: Define locking mechanism
 
 Enumerated below are the essential steps to completing this task. For a deeper dive before you begin, see
 the [Task 4 Details](task4.md) document.
 
-### Task 5: <TODO: Declare me!>
+1. Still in the [safe_deposit_box.cpp](src/main/cpp/safe_deposit_box.cpp) source file, locate the
+   `TODO:  Task 4 - Step 1: Toggle TEST_TASK_4 TO TRUE` comment and update the macro definition as instructed. Remove
+   the `TODO` comment once done.
+2. Still in the `safe_deposit_box.cpp` source file, locate the `TODO: Task 4a` and implement this member function
+   accordingly. See the [Task 4 Details](task4.md) document for appropriate details and guidance.
+3. Next, locate the `TODO: Task 4b` and implement this member function
+   accordingly. See the [Task 4 Details](task4.md) document for appropriate details and guidance.
+4. Next, locate the `TODO: Task 4c` and implement this member function
+   accordingly. See the [Task 4 Details](task4.md) document for appropriate details and guidance.
+5. When you're ready to test your solution, execute the `unit_tests` target to assess the correctness of your solution.
+6. When you are satisfied with the results of the unit tests for this task, stage, commit, and push your changes to
+   GitHub.
+
+### Task 5: Override inherited methods
 
 Enumerated below are the essential steps to completing this task. For a deeper dive before you begin, see
 the [Task 5 Details](task5.md) document.
+
+1. Still in the [safe_deposit_box.cpp](src/main/cpp/safe_deposit_box.cpp) source file, locate the
+   `TODO:  Task 5 - Step 1: Toggle TEST_TASK_5 TO TRUE` comment and update the macro definition as instructed. Remove
+   the `TODO` comment once done.
+2. Still in the `safe_deposit_box.cpp` source file, locate the `TODO: Task 5a` and implement this member function
+   accordingly. See the [Task 5 Details](task5.md) document for appropriate details and guidance.
+3. Next, locate the `TODO: Task 5b` and implement this member function
+   accordingly. See the [Task 5 Details](task5.md) document for appropriate details and guidance.
+4. When you're ready to test your solution, execute the `unit_tests` target to assess the correctness of your solution.
+5. When you are satisfied with the results of the unit tests for this task, stage, commit, and push your changes to
+   GitHub.
 
 ## Submission Details
 
@@ -100,11 +153,11 @@ be granted for this oversight**.
 
 ### Due Date
 
-Your assignment submission is due by ...
+Your assignment submission is due by 11:59 PM, Monday, January 26, 2025.
 
 ### Grading Rubric
 
-This assignment is worth **3|5 points**.
+This assignment is worth **5 points**.
 
 | Criteria           | Exceeds Expectations         | Meets Expectations                  | Below Expectations                  | Failure                                        |
 |--------------------|------------------------------|-------------------------------------|-------------------------------------|------------------------------------------------|

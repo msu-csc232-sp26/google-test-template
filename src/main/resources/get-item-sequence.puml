@@ -1,0 +1,19 @@
+
+@startuml
+skinparam style strictuml
+
+actor Client
+participant "safe_deposit_box<T>" as Box
+participant "plain_box<T>" as Plain
+participant "csc232::log_error(...)" as Logger
+participant "stream_file_writer" as Writer
+
+Client -> Box : get_item()
+Box -> Box : check is_locked()
+
+alt is_locked_ == true
+  Box -> Writer ++ : construct
+  Box -> Logger : log_error("error.log", Writer, "Attempt to access item from locked safe deposit box")
+  Logger --> Box : (logged)
+end
+@enduml
