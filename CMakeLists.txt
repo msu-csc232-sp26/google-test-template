@@ -2,18 +2,7 @@ cmake_minimum_required(VERSION 3.16.3)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(IS_HW FALSE)
 
-project(lab-or-hw)
-
-option(ENABLE_SANITIZERS "Enable sanitizers in Debug builds" ON)
-
-if (ENABLE_SANITIZERS AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-    if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-        message(STATUS "Sanitizers enabled for Debug build!")
-        set(SANITIZER_FLAGS "-fsanitize=address,undefined,leak -fno-omit-frame-pointer")
-        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${SANITIZER_FLAGS}")
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SANITIZER_FLAGS}")
-    endif ()
-endif ()
+project(lab02-sp26)
 
 if (CMAKE_VERSION GREATER_EQUAL "3.24.0")
     cmake_policy(SET CMP0135 NEW)
@@ -47,6 +36,7 @@ enable_testing()
 include(GoogleTest)
 add_executable(unit_tests ${SRC_UNIT_TESTS})
 target_link_libraries(unit_tests PRIVATE GTest::gtest) # NOTE: not gtest_main
+target_link_libraries(unit_tests PRIVATE GTest::gmock GTest::gtest)
 gtest_discover_tests(unit_tests)
 
 target_include_directories(main PUBLIC ${CMAKE_CURRENT_LIST_DIR}/include ${CMAKE_CURRENT_LIST_DIR}/src/main/cpp)
@@ -59,6 +49,9 @@ add_custom_command(TARGET demo POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_di
 add_custom_command(TARGET unit_tests POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_LIST_DIR}/src/test/resources/task1_test_data.txt ${CMAKE_CURRENT_BINARY_DIR})
 add_custom_command(TARGET unit_tests POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_LIST_DIR}/src/test/resources/task2_test_data.txt ${CMAKE_CURRENT_BINARY_DIR})
 add_custom_command(TARGET unit_tests POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_LIST_DIR}/src/test/resources/task3_test_data.txt ${CMAKE_CURRENT_BINARY_DIR})
+add_custom_command(TARGET unit_tests POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_LIST_DIR}/include/cell.h ${CMAKE_CURRENT_BINARY_DIR})
+add_custom_command(TARGET unit_tests POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_LIST_DIR}/include/memory_cell.h ${CMAKE_CURRENT_BINARY_DIR})
+
 
 if (IS_HW)
     add_custom_command(TARGET unit_tests PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_LIST_DIR}/src/test/resources/task4_test_data.txt ${CMAKE_CURRENT_BINARY_DIR})

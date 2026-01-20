@@ -10,18 +10,18 @@ BackgroundColor PaleGreen
 namespace csc232 #DDDDDD {
 }
 
-interface csc232::cell<Object> {
+interface csc232::cell<object> {
 + ~cell()
-+ {abstract} read() const : Object
-+ {abstract} write( value : const Object& ) : void
++ {abstract} read() const : object
++ {abstract} write( value : const object& ) : void
 }
 
 csc232::cell <|-- csc232::memory_cell
 
-class csc232::memory_cell<Object> {
-- m_data : Object
-+ read() const : Object
-+ write( value : const Object& ) : void
+class csc232::memory_cell<object> {
+- m_data : object
++ read() const : object
++ write( value : const object& ) : void
 }
 
 show memory_cell fields

@@ -16,6 +16,16 @@
 
 auto main( ) -> int
 {
-    std::cout << "Main target" << std::endl;
+#if TEST_TASK3
+    auto cell = std::make_unique< csc232::memory_cell< int > >( );
+    std::cout << "Initially, cell contains:" << std::endl;
+    std::cout << cell->read( ) << std::endl;
+    auto constexpr NUM_STUDENTS{ 10 };
+    std::cout << "Writing " << NUM_STUDENTS << " students in memory." << std::endl;
+    cell->write( NUM_STUDENTS );
+    std::cout << "Cell now contains: ";
+    std::cout << cell->read( ) << std::endl;
+#endif
+
     return EXIT_SUCCESS;
 }

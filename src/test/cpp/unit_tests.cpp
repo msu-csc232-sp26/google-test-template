@@ -13,7 +13,10 @@
 
 // unit_tests.cpp
 #include "base_test_fixture.h"
+#include "cell.h"
 #include "csc232.h"
+#include "memory_cell.h"
+
 #include "gtest/gtest.h"
 #include <iomanip>
 #include <iostream>
@@ -23,137 +26,202 @@
 // -----------------------------------------------------------------------------
 // Task 1 Fixture and Tests
 // -----------------------------------------------------------------------------
-#if TEST_TASK_1
-class Task1 : public csc232::CSC232BaseTestFixture
+#if TEST_TASK1
+/**
+ * Text fixture for task 1.
+ */
+class Task1TestFixture : public csc232::CSC232BaseTestFixture
 {
-protected:
-    void SetUp( ) override
-    {
-        // Initialize any shared state/resources for Task 1 tests.
-    }
-
-    void TearDown( ) override
-    {
-        // Cleanup for Task 1.
-    }
 };
 
-TEST_F( Task1TestFixture, RewriteThisTest )
+TEST_F( Task1TestFixture, ItDeclaresReadMethod )
 {
-    std::cout << "Task 1 is ready for evaluation, but this isn't going to validate anything.\n";
-    SUCCEED( );
+    // Using static_assert means that if student hasn't declared the read method properly,
+    // this test target won't even compile.
+    static_assert( csc232::HasReadMethod< int, csc232::cell< int > >,
+                   "csc232::cell<T> must declare a method: T read() const" );
+}
+
+TEST_F( Task1TestFixture, ItDeclaresVirtualReadMethod )
+{
+    struct Derived : csc232::cell< int >
+    {
+        auto write( const int &value ) -> void override
+        {
+            // intentionally empty
+        }
+        [[nodiscard]] auto read( ) const -> int override
+        {
+            return 0;
+        }
+    };
+    std::unique_ptr< csc232::cell< int > > base = std::make_unique< Derived >( );
+    EXPECT_NO_THROW( {
+        base->read( ); // If not virtual, this would not dispatch correctly
+    } );
+}
+
+TEST_F( Task1TestFixture, ItDeclaresWriteMethod )
+{
+    // Using static_assert means that if student hasn't declared the read method properly,
+    // this test target won't even compile.
+    static_assert(csc232::HasWriteMethod< int, csc232::cell< int > >,
+        "csc232::cell< T > must declare a method: void write( const T& )"
+    );
+}
+
+TEST_F( Task1TestFixture, ItDeclaresVirtualWriteMethod )
+{
+    struct Derived : csc232::cell< int >
+    {
+        void write( const int &value ) override
+        {
+            // intentionally empty
+        }
+        [[nodiscard]] auto read( ) const -> int override
+        {
+            return 0;
+        }
+    };
+
+    std::unique_ptr< csc232::cell< int > > base = std::make_unique< Derived >( );
+    EXPECT_NO_THROW( {
+        base->write( 42 ); // If not virtual, this would not dispatch correctly
+    } );
 }
 
 #else
-TEST( Task1, ItIsNotReady )
+TEST( Task1TestFixture, ItIsNotReady )
 {
     std::cerr << "Task 1 is not ready for evaluation; please toggle the TEST_TASK1 macro to TRUE\n";
     SUCCEED( );
 }
-#endif // TEST_TASK_1
+#endif // TEST_TASK1
 
 // -----------------------------------------------------------------------------
 // Task 2 Fixture and Tests
 // -----------------------------------------------------------------------------
-#if TEST_TASK_2
-class Task2 : public ::testing::Test
+#if TEST_TASK2
+// NOLINTBEGIN(bugprone-easily-swappable-parameters)
+auto contains_destructor( const std::string &fileContent, const std::string &className ) -> bool
 {
-protected:
-    void SetUp( ) override { }
-    void TearDown( ) override { }
+    std::regex pattern( "~\\s*" + className + R"(\s*\(\s*\)\s*.*;)" );
+    return std::regex_search( fileContent, pattern );
+}
+
+auto contains_method( const std::string &fileContent, const std::string &methodName ) -> bool
+{
+    // This regex matches a method declaration with optional return type, parameters, and qualifiers
+    // std::regex pattern( R"(([\w:<>\s*&]+)?\s+)" + methodName + R"(\s*\([^;{)]*\)\s*(const)?\s*(override)?\s*(=\s*default)?\s*;)" );
+    const std::string method_name = "write"; // or any method name (escape if necessary)
+
+    // build pattern: optional leading return type OR optional trailing return type
+    std::regex pattern(
+        std::string(R"((?:([\w:<>\s*&]+)\s+)?)")    // optional leading return type
+      + method_name
+      + R"(\s*\([^;{)]*\)\s*)"                     // parameter list
+        R"((?:->\s*([\w:<>\s*&:<>\s]+)\s*)?)"      // optional trailing return type
+      + R"((?:const\b)?\s*(?:noexcept\b(?:\([^)]*\))?\s*)?(?:&{1,2})?\s*(?:override\b)?\s*(?:=\s*(?:default|0))?\s*;)"
+    );
+    return std::regex_search( fileContent, pattern );
+}
+
+auto contains_const_method( const std::string &fileContent, const std::string &methodName ) -> bool
+{
+
+    // This regex matches const-qualified member functions, including those with trailing return types
+    std::regex pattern( R"((?:[\w:<>\s*&]+)?\s+)" + methodName +  // optional return type + method name
+                        R"(\s*\([^;{)]*\)\s+const\s*)"            // parameter list and const
+                        R"((?:->\s*[\w:<>\s*&]+)?\s*)"            // optional trailing return type
+                        R"((?:override)?\s*(?:=\s*default)?\s*;)" // optional override and = default
+    );
+    return std::regex_search( fileContent, pattern );
+}
+// NOLINTEND(bugprone-easily-swappable-parameters)
+
+auto readFile( const std::string &filePath ) -> std::string
+{
+    std::ifstream file( filePath );
+    std::stringstream buffer;
+    buffer << file.rdbuf( );
+    return buffer.str( );
+}
+
+/**
+ * Text fixture for task 2.
+ */
+class Task2TestFixture : public csc232::CSC232BaseTestFixture
+{
 };
 
-// --- Replace these with your real Task 2 unit tests ---
-TEST_F( Task2, RewriteThisTest )
+TEST_F( Task2TestFixture, ItDeclaresDefaultConstructor )
 {
-    std::cout << "Task 2 is ready for evaluation, but this isn't going to validate anything.\n";
-    SUCCEED( );
+    ASSERT_TRUE( is_method_declared_in_class( "memory_cell.h", "csc232", "memory_cell", "memory_cell" ) );
 }
+
+TEST_F( Task2TestFixture, ItDeclaresDestructor )
+{
+    std::string fileContent = readFile( "memory_cell.h" );
+    ASSERT_TRUE( contains_destructor( fileContent, "memory_cell" ) ) << "Destructor not declared for class memory_cell";
+}
+
+TEST_F( Task2TestFixture, ItDeclaresReadMethod )
+{
+    std::string fileContent = readFile( "memory_cell.h" );
+    ASSERT_TRUE( contains_const_method( fileContent, "read" ) );
+}
+
+TEST_F( Task2TestFixture, ItDeclaresWriteMethod )
+{
+    std::string fileContent = readFile( "memory_cell.h" );
+    ASSERT_TRUE( contains_method( fileContent, "write" ) );
+}
+
 #else
-TEST( Task2, ItIsNotReady )
+TEST( Task2TestFixture, ItIsNotReady )
 {
     std::cerr << "Task 2 is not ready for evaluation; please toggle the TEST_TASK2 macro to TRUE\n";
     SUCCEED( );
 }
-#endif // TEST_TASK_2
+#endif // TEST_TASK2
 
 // -----------------------------------------------------------------------------
 // Task 3 Fixture and Tests
 // -----------------------------------------------------------------------------
-#if TEST_TASK_3
-class Task3 : public ::testing::Test
+#if TEST_TASK3
+/**
+ * Text fixture for task 3.
+ */
+class Task3TestFixture : public csc232::CSC232BaseTestFixture
 {
-protected:
-    void SetUp( ) override { }
-    void TearDown( ) override { }
 };
 
-// --- Replace these with your real Task 3 unit tests ---
-
-TEST_F( Task3, RewriteThisTest )
+TEST_F( Task3TestFixture, ItCanCreateDefaultIntCell )
 {
-    std::cout << "Task 3 is ready for evaluation, but this isn't going to validate anything.\n";
-    SUCCEED( );
+    auto cell = std::make_unique< csc232::memory_cell< int > >( );
+    EXPECT_TRUE( cell->read( ) == int{ } );
+}
+
+TEST_F( Task3TestFixture, ItCanCreateDefaultDoubleCell )
+{
+    auto cell = std::make_unique< csc232::memory_cell< double > >( );
+    EXPECT_TRUE( cell->read( ) == double{ } );
+}
+
+TEST_F( Task3TestFixture, ItCanReadAnUpdatedValue )
+{
+    auto const VALUE{ 42 };
+    auto cell = std::make_unique< csc232::memory_cell< int > >( );
+    cell->write( VALUE );
+    EXPECT_TRUE( cell->read( ) == VALUE );
 }
 #else
-TEST( Task3, ItIsNotReady )
+TEST( Task3TestFixture, ItIsNotReady )
 {
     std::cerr << "Task 3 is not ready for evaluation; please toggle the TEST_TASK3 macro to TRUE\n";
     SUCCEED( );
 }
 #endif // TEST_TASK_3
-
-// -----------------------------------------------------------------------------
-// Task 4 Fixture and Tests
-// -----------------------------------------------------------------------------
-#if TEST_TASK_4
-class Task4 : public ::testing::Test
-{
-protected:
-    void SetUp( ) override { }
-    void TearDown( ) override { }
-};
-
-// --- Replace these with your real Task 3 unit tests ---
-
-TEST_F( Task4, RewriteThisTest )
-{
-    std::cout << "Task 4 is ready for evaluation, but this isn't going to validate anything.\n";
-    SUCCEED( );
-}
-#else
-TEST( Task4, ItIsNotReady )
-{
-    std::cerr << "Task 4 is not ready for evaluation; please toggle the TEST_TASK4 macro to TRUE\n";
-    SUCCEED( );
-}
-#endif // TEST_TASK_4
-
-// -----------------------------------------------------------------------------
-// Task 5 Fixture and Tests
-// -----------------------------------------------------------------------------
-#if TEST_TASK_5
-class Task5 : public ::testing::Test
-{
-protected:
-    void SetUp( ) override { }
-    void TearDown( ) override { }
-};
-
-// --- Replace these with your real Task 3 unit tests ---
-
-TEST_F( Task5, RewriteThisTest )
-{
-    std::cout << "Task 5 is ready for evaluation, but this isn't going to validate anything.\n";
-    SUCCEED( );
-}
-#else
-TEST( Task5, ItIsNotReady )
-{
-    std::cerr << "Task 5 is not ready for evaluation; please toggle the TEST_TASK5 macro to TRUE\n";
-    SUCCEED( );
-}
-#endif // TEST_TASK_5
 
 // -----------------------------------------------------------------------------
 // Helper: Print task-by-task summary and compute score
@@ -208,8 +276,8 @@ static void PrintPerTaskSummaryAndScore( )
     std::cout << "\n========== Assignment Task Results ==========\n";
     for ( const auto &suiteSummary : summaries )
     {
-        // Recommend naming fixtures exactly "Task1", "Task2", "Task3"
-        if ( suiteSummary.name == "Task1" || suiteSummary.name == "Task2" || suiteSummary.name == "Task3" || suiteSummary.name == "Task4" || suiteSummary.name == "Task5" )
+        // Recommend naming fixtures exactly "Task1TestFixture", "Task2TestFixture", "Task3TestFixture"
+        if ( suiteSummary.name == "Task1TestFixture" || suiteSummary.name == "Task2TestFixture" || suiteSummary.name == "Task3TestFixture" || suiteSummary.name == "Task4TestFixture" || suiteSummary.name == "Task5TestFixture" )
         {
             std::cout << "Task: " << suiteSummary.name << "\n"
                       << "  Passing: " << suiteSummary.passed << "\n"

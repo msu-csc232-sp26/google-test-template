@@ -34,4 +34,10 @@
  * @copyright Copyright (c) 2026 James R. Daehn. All rights reserved.
  */
 
-// #include "csc232.h" // usually used to conditional declare based on current task
+#include "csc232.h" // usually used to conditional declare based on current task
+#include "memory_cell.cpp"
+
+#if TEST_TASK3
+template class csc232::memory_cell< int >;
+template class csc232::memory_cell< double >;
+#endif
