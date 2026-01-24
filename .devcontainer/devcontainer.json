@@ -4,6 +4,9 @@
   "features": {
     "ghcr.io/devcontainers-community/features/llvm:3": {},
     "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/devcontainers/features/sshd:1": {
+      "version": "latest"
+    },
     "ghcr.io/rocker-org/devcontainer-features/apt-packages:1": {
       "packages": "build-essential,doxygen,mscgen,dia,graphviz,valgrind,gdbserver,valgrind-mpi,clangd,git-lfs,fonts-powerline",
       "upgradePackages": true
