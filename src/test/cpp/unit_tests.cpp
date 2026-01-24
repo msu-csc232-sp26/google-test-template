@@ -56,7 +56,7 @@ TEST( Task1, ItIsNotReady )
 // Task 2 Fixture and Tests
 // -----------------------------------------------------------------------------
 #if TEST_TASK_2
-class Task2 : public ::testing::Test
+class Task2 : public csc232::CSC232BaseTestFixture
 {
 protected:
     void SetUp( ) override { }
@@ -81,7 +81,7 @@ TEST( Task2, ItIsNotReady )
 // Task 3 Fixture and Tests
 // -----------------------------------------------------------------------------
 #if TEST_TASK_3
-class Task3 : public ::testing::Test
+class Task3 : public csc232::CSC232BaseTestFixture
 {
 protected:
     void SetUp( ) override { }
@@ -107,7 +107,7 @@ TEST( Task3, ItIsNotReady )
 // Task 4 Fixture and Tests
 // -----------------------------------------------------------------------------
 #if TEST_TASK_4
-class Task4 : public ::testing::Test
+class Task4 : public csc232::CSC232BaseTestFixture
 {
 protected:
     void SetUp( ) override { }
@@ -133,7 +133,7 @@ TEST( Task4, ItIsNotReady )
 // Task 5 Fixture and Tests
 // -----------------------------------------------------------------------------
 #if TEST_TASK_5
-class Task5 : public ::testing::Test
+class Task5 : public csc232::CSC232BaseTestFixture
 {
 protected:
     void SetUp( ) override { }
