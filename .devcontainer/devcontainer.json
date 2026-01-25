@@ -1,13 +1,25 @@
 {
-  "name": "C++ Dev Container",
+  "name": "CSC232 C++ (Clang+Doxygen)",
   "image": "mcr.microsoft.com/devcontainers/cpp:ubuntu",
   "features": {
-    "ghcr.io/devcontainers-community/features/llvm:3": {},
-    "ghcr.io/devcontainers/features/github-cli:1": {},
-    "ghcr.io/devcontainers/features/sshd:1": {},
     "ghcr.io/rocker-org/devcontainer-features/apt-packages:1": {
-      "packages": "build-essential,doxygen,mscgen,dia,graphviz,valgrind,gdbserver,valgrind-mpi,clangd,git-lfs,fonts-powerline",
+      "packages": "clang,clang-tidy,clang-format,cmake,ninja-build,doxygen,graphviz,python3,git-lfs",
       "upgradePackages": true
+    }
+  },
+  // Make clang the default toolchain for everything running in the container.
+  "containerEnv": {
+    "CC": "clang",
+    "CXX": "clang++"
+  },
+  // Forward and auto-open the docs in a real browser when the server starts.
+  "forwardPorts": [
+    5500
+  ],
+  "portsAttributes": {
+    "5500": {
+      "label": "Doxygen Docs",
+      "onAutoForward": "openBrowser"
     }
   },
   "remoteUser": "vscode",
@@ -16,16 +28,19 @@
       "extensions": [
         "ms-vscode.cpptools",
         "ms-vscode.cmake-tools",
-        "ms-vscode.live-server"
+        "llvm-vs-code-extensions.vscode-clangd" // optional: clangd IntelliSense
       ],
       "settings": {
-        "cmake.configureOnOpen": true,
-        "cmake.buildDirectory": "${workspaceFolder}/build",
-        "liveServer.settings.root": "${localWorkspaceFolder}/api/html",
-        "liveServer.settings.file": "index.html",
-        "liveServer.settings.port": 5500
+        // Drive CMake via Presets (no Kits prompts) and avoid racing the script.
+        "cmake.useCMakePresets": "always",
+        "cmake.configureOnOpen": false,
+        // clang-format on save, using repo's .clang-format
+        "editor.formatOnSave": true,
+        "C_Cpp.formatting": "clangFormat",
+        "C_Cpp.clang_format_style": "file"
       }
     }
   },
-  "postCreateCommand": "bash .devcontainer/postCreate.sh"
+  // One-time setup: fix ownership, configure, and build docs.
+  "postCreateCommand": "sudo chown -R vscode:vscode . && cmake -S . -B build && cmake --build build --target doc_doxygen"
 }

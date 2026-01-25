@@ -55,31 +55,49 @@ if (IS_HW)
     add_custom_command(TARGET unit_tests PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_LIST_DIR}/src/test/resources/task5_test_data.txt ${CMAKE_CURRENT_BINARY_DIR})
 endif ()
 
-# first we can indicate the documentation build as an option and set it to OFF by default
-option(BUILD_DOC "Build documentation" OFF)
-find_package(Doxygen
-        OPTIONAL_COMPONENTS dot mscgen dia)
-if (DOXYGEN_FOUND)
-    # set input and output files
-    set(DOXYGEN_IN ${CMAKE_CURRENT_SOURCE_DIR}/config/Doxyfile.in)
-    set(DOXYGEN_OUT ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
 
-    # request to configure the file
-    configure_file(${DOXYGEN_IN} ${DOXYGEN_OUT} @ONLY)
-    message("Doxygen build started")
 
-    # note the option ALL which allows to build the config together with the application
-    add_custom_target(doc_doxygen ALL
-            COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_OUT}
-            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-            COMMENT "Generating API documentation with Doxygen"
-            VERBATIM)
-else (DOXYGEN_FOUND)
-    message("Doxygen need to be installed to generate the doxygen documentation")
-endif (DOXYGEN_FOUND)
+# --- Doxygen integration that uses config/Doxyfile.in ---
 
-add_custom_command(
-    TARGET doc_doxygen POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E echo "Opening docs..."
-    COMMAND code --open-url http://localhost:5500/index.html
-)
+# Ask CMake to find doxygen and (optionally) Graphviz's 'dot' for diagrams.
+find_package(Doxygen OPTIONAL_COMPONENTS dot)  # 'dot' is used for diagrams if present. [1](https://cmake.org/cmake/help/latest/module/FindDoxygen.html)
+
+if (Doxygen_FOUND)
+  # Where the configured Doxyfile will be written
+  set(DOXYFILE_CFG            "${CMAKE_BINARY_DIR}/Doxyfile")
+
+  # These variables can be substituted into Doxyfile.in with @VAR@.
+  # Feel free to tweak the INPUT paths to match your project’s sources.
+  set(PROJECT_SOURCE_DIR_ESC  "${CMAKE_SOURCE_DIR}")
+  set(PROJECT_BINARY_DIR_ESC  "${CMAKE_BINARY_DIR}")
+
+  # Where you want the generated HTML to land → api/html (per your requirement)
+  set(DOXY_OUTPUT_DIR         "${CMAKE_SOURCE_DIR}/api")
+  set(DOXY_HTML_OUTPUT        "html")
+
+  # Optional: If you want diagrams and Graphviz is present, set HAVE_DOT=YES via Doxyfile.in.
+  if (TARGET Doxygen::dot)
+    set(HAVE_DOT_DEFAULT "YES")  # honored only if Doxyfile.in uses @HAVE_DOT_DEFAULT@
+  else()
+    set(HAVE_DOT_DEFAULT "NO")
+  endif()
+
+  # Configure your template (no variable expansion other than @VAR@).
+  configure_file(
+    "${CMAKE_SOURCE_DIR}/config/Doxyfile.in"
+    "${DOXYFILE_CFG}"
+    @ONLY
+  )  # This is the standard pattern to drive Doxygen from a Doxyfile template. [2](https://vicrucann.github.io/tutorials/quick-cmake-doxygen/)
+
+  message(STATUS "Doxygen configured → ${DOXYFILE_CFG}")
+
+  # Create a build target to generate docs
+  add_custom_target(doc_doxygen
+    COMMAND ${Doxygen_EXECUTABLE} "${DOXYFILE_CFG}"
+    WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"   # So relative INPUT in Doxyfile works from the repo root. [3](https://stackoverflow.com/questions/60955881/cmake-for-doxygen)
+    COMMENT "Generating API documentation with Doxygen (output: ${DOXY_OUTPUT_DIR}/${DOXY_HTML_OUTPUT})"
+    VERBATIM
+  )
+else()
+  message(STATUS "Doxygen not found; 'doc_doxygen' target will be unavailable.")
+endif()
