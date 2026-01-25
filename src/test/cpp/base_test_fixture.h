@@ -27,7 +27,7 @@ namespace csc232
     };
 
     template < typename T, typename C >
-    concept HasWriteMethod = requires( C object, const T &value )
+    concept HasWriteMethod = requires( C &object, const T &value )
     {
         { object.write( value ) } -> std::same_as< void >;
     };
