@@ -4,34 +4,28 @@
   "features": {
     "ghcr.io/devcontainers-community/features/llvm:3": {},
     "ghcr.io/devcontainers/features/github-cli:1": {},
-    "ghcr.io/devcontainers/features/sshd:1": {
-      "version": "latest"
-    },
+    "ghcr.io/devcontainers/features/sshd:1": {},
     "ghcr.io/rocker-org/devcontainer-features/apt-packages:1": {
       "packages": "build-essential,doxygen,mscgen,dia,graphviz,valgrind,gdbserver,valgrind-mpi,clangd,git-lfs,fonts-powerline",
       "upgradePackages": true
     }
   },
+  "remoteUser": "vscode",
   "customizations": {
     "vscode": {
+      "extensions": [
+        "ms-vscode.cpptools",
+        "ms-vscode.cmake-tools",
+        "ms-vscode.live-server"
+      ],
       "settings": {
-        "terminal.integrated.defaultProfile.linux": "zsh",
-        "editor.formatOnSave": true,
-        "editor.formatOnSaveMode": "file",
-        "editor.fontFamily": "'Source Code Pro','Ubuntu Mono','Fira Code', monospace",
-        "editor.fontSize": 21,
-        "terminal.integrated.fontFamily": "'Source Code Pro','Ubuntu Mono','Fira Code', monospace",
-        "terminal.integrated.fontSize": 21
+        "cmake.configureOnOpen": true,
+        "cmake.buildDirectory": "${workspaceFolder}/build",
+        "liveServer.settings.root": "${localWorkspaceFolder}/api/html",
+        "liveServer.settings.file": "index.html",
+        "liveServer.settings.port": 5500
       }
-    },
-    "extensions": [
-      "ms-vscode.cpptools",
-      "ms-vscode.cmake-tools"
-    ]
+    }
   },
-  "containerEnv": {
-    "CC": "clang",
-    "CXX": "clang++"
-  },
-  "postCreateCommand": "git lfs install"
+  "postCreateCommand": "bash .devcontainer/postCreate.sh"
 }

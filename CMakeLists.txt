@@ -77,3 +77,9 @@ if (DOXYGEN_FOUND)
 else (DOXYGEN_FOUND)
     message("Doxygen need to be installed to generate the doxygen documentation")
 endif (DOXYGEN_FOUND)
+
+add_custom_command(
+    TARGET doc_doxygen POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E echo "Opening docs..."
+    COMMAND code --open-url http://localhost:5500/index.html
+)
