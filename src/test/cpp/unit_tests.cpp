@@ -23,8 +23,8 @@
 // -----------------------------------------------------------------------------
 // Task 1 Fixture and Tests
 // -----------------------------------------------------------------------------
-#if TEST_TASK_1
-class Task1 : public csc232::CSC232BaseTestFixture
+#if TEST_TASK1
+class Task1TestFixture : public csc232::CSC232BaseTestFixture
 {
 protected:
     void SetUp( ) override
@@ -45,7 +45,7 @@ TEST_F( Task1TestFixture, RewriteThisTest )
 }
 
 #else
-TEST( Task1, ItIsNotReady )
+TEST( Task1Primer, ItIsNotReady )
 {
     std::cerr << "Task 1 is not ready for evaluation; please toggle the TEST_TASK1 macro to TRUE\n";
     SUCCEED( );
@@ -55,8 +55,8 @@ TEST( Task1, ItIsNotReady )
 // -----------------------------------------------------------------------------
 // Task 2 Fixture and Tests
 // -----------------------------------------------------------------------------
-#if TEST_TASK_2
-class Task2 : public csc232::CSC232BaseTestFixture
+#if TEST_TASK2
+class Task2TestFixture : public csc232::CSC232BaseTestFixture
 {
 protected:
     void SetUp( ) override { }
@@ -64,13 +64,13 @@ protected:
 };
 
 // --- Replace these with your real Task 2 unit tests ---
-TEST_F( Task2, RewriteThisTest )
+TEST_F( Task2TestFixture, RewriteThisTest )
 {
     std::cout << "Task 2 is ready for evaluation, but this isn't going to validate anything.\n";
     SUCCEED( );
 }
 #else
-TEST( Task2, ItIsNotReady )
+TEST( Task2Primer, ItIsNotReady )
 {
     std::cerr << "Task 2 is not ready for evaluation; please toggle the TEST_TASK2 macro to TRUE\n";
     SUCCEED( );
@@ -80,8 +80,8 @@ TEST( Task2, ItIsNotReady )
 // -----------------------------------------------------------------------------
 // Task 3 Fixture and Tests
 // -----------------------------------------------------------------------------
-#if TEST_TASK_3
-class Task3 : public csc232::CSC232BaseTestFixture
+#if TEST_TASK3
+class Task3TestFixture : public csc232::CSC232BaseTestFixture
 {
 protected:
     void SetUp( ) override { }
@@ -90,13 +90,13 @@ protected:
 
 // --- Replace these with your real Task 3 unit tests ---
 
-TEST_F( Task3, RewriteThisTest )
+TEST_F( Task3TestFixture, RewriteThisTest )
 {
     std::cout << "Task 3 is ready for evaluation, but this isn't going to validate anything.\n";
     SUCCEED( );
 }
 #else
-TEST( Task3, ItIsNotReady )
+TEST( Task3Primer, ItIsNotReady )
 {
     std::cerr << "Task 3 is not ready for evaluation; please toggle the TEST_TASK3 macro to TRUE\n";
     SUCCEED( );
@@ -106,8 +106,8 @@ TEST( Task3, ItIsNotReady )
 // -----------------------------------------------------------------------------
 // Task 4 Fixture and Tests
 // -----------------------------------------------------------------------------
-#if TEST_TASK_4
-class Task4 : public csc232::CSC232BaseTestFixture
+#if TEST_TASK4
+class Task4TestFixture : public csc232::CSC232BaseTestFixture
 {
 protected:
     void SetUp( ) override { }
@@ -116,13 +116,13 @@ protected:
 
 // --- Replace these with your real Task 3 unit tests ---
 
-TEST_F( Task4, RewriteThisTest )
+TEST_F( Task4TestFixture, RewriteThisTest )
 {
     std::cout << "Task 4 is ready for evaluation, but this isn't going to validate anything.\n";
     SUCCEED( );
 }
 #else
-TEST( Task4, ItIsNotReady )
+TEST( Task4Primer, ItIsNotReady )
 {
     std::cerr << "Task 4 is not ready for evaluation; please toggle the TEST_TASK4 macro to TRUE\n";
     SUCCEED( );
@@ -132,8 +132,8 @@ TEST( Task4, ItIsNotReady )
 // -----------------------------------------------------------------------------
 // Task 5 Fixture and Tests
 // -----------------------------------------------------------------------------
-#if TEST_TASK_5
-class Task5 : public csc232::CSC232BaseTestFixture
+#if TEST_TASK5
+class Task5TestFixture : public csc232::CSC232BaseTestFixture
 {
 protected:
     void SetUp( ) override { }
@@ -142,13 +142,13 @@ protected:
 
 // --- Replace these with your real Task 3 unit tests ---
 
-TEST_F( Task5, RewriteThisTest )
+TEST_F( Task5TestFixture, RewriteThisTest )
 {
     std::cout << "Task 5 is ready for evaluation, but this isn't going to validate anything.\n";
     SUCCEED( );
 }
 #else
-TEST( Task5, ItIsNotReady )
+TEST( Task5Primer, ItIsNotReady )
 {
     std::cerr << "Task 5 is not ready for evaluation; please toggle the TEST_TASK5 macro to TRUE\n";
     SUCCEED( );
@@ -209,7 +209,11 @@ static void PrintPerTaskSummaryAndScore( )
     for ( const auto &suiteSummary : summaries )
     {
         // Recommend naming fixtures exactly "Task1", "Task2", "Task3"
-        if ( suiteSummary.name == "Task1" || suiteSummary.name == "Task2" || suiteSummary.name == "Task3" || suiteSummary.name == "Task4" || suiteSummary.name == "Task5" )
+        if ( suiteSummary.name == "Task1TestFixture" ||
+             suiteSummary.name == "Task2TestFixture" ||
+             suiteSummary.name == "Task3TestFixture" ||
+             suiteSummary.name == "Task4TestFixture" ||
+             suiteSummary.name == "Task5TestFixture" )
         {
             std::cout << "Task: " << suiteSummary.name << "\n"
                       << "  Passing: " << suiteSummary.passed << "\n"
