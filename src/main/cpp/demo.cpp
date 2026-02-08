@@ -28,5 +28,6 @@
 auto main( ) -> int
 {
     std::cout << "Demo target" << std::endl;
+    std::cout << "A random UUID: " << csc232::generate_uuid( ) << std::endl;
     return EXIT_SUCCESS;
 }
