@@ -31,6 +31,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
+#include <format>
 #include <iomanip>
 #include <iostream>
 #include <random>
@@ -57,6 +58,28 @@ namespace csc232
     // Add any user-defined functions prescribed in your assignment below
 
     // DO NOT Modify anything below this line
+    static constexpr auto VALUE_MASK{ 0xF };
+    static constexpr auto DECIMAL_UPPER_BOUND{ 10 };
+
+    inline auto hex_lower( unsigned value ) -> char
+    {
+        value &= VALUE_MASK;
+        return static_cast< char >( value < DECIMAL_UPPER_BOUND ? ( '0' + value ) : ( 'a' + ( value - DECIMAL_UPPER_BOUND ) ) );
+    }
+
+    static constexpr auto NUM_BYTES = 16;
+    static constexpr auto DISTRIBUTION_UPPER_BOUND{ 255 };
+    static constexpr auto V4_INDEX{ 6 };
+    static constexpr auto V4_HEX_MASK1{ 0x0F };
+    static constexpr auto V4_HEX_MASK2{ 0x40 };
+    static constexpr auto VARIANT_INDEX{ 8 };
+    static constexpr auto VARIANT_HEX_MASK1{ 0x3F };
+    static constexpr auto VARIANT_HEX_MASK2{ 0x80 };
+    static constexpr auto BYTE_RESERVATION{ 36 };
+    static constexpr auto FIRST_DASH_INDEX{ 4 };
+    static constexpr auto SECOND_DASH_INDEX{ 6 };
+    static constexpr auto THIRD_DASH_INDEX{ 8 };
+    static constexpr auto FOURTH_DASH_INDEX{ 10 };
 
     /**
      * @brief Generate a quasi-random UUID.
@@ -64,29 +87,35 @@ namespace csc232
      */
     inline auto generate_uuid( ) -> std::string
     {
-        static constexpr auto DISTRIBUTION_RANGE{ 15 };
+        std::array< std::uint8_t, NUM_BYTES > bytes{ };
+
         static std::random_device random_device;
-        static std::mt19937 random_number_generator( random_device( ) );
+        static std::mt19937 rng( random_device( ) );
+        std::uniform_int_distribution< unsigned > dist( 0, DISTRIBUTION_UPPER_BOUND );
 
-        std::uniform_int_distribution< int > dist( 0, DISTRIBUTION_RANGE );
-
-        const auto dash = std::vector{
-            false, false, false, false, true, false, true, false,
-            true, false, true, false, false, false, false, false };
-
-        auto uuid = std::string{ };
-        for ( bool dash_location : dash )
+        for ( auto &b : bytes )
         {
-            const std::vector uuid_alphabet = {
-                '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
-
-            if ( dash_location )
-            {
-                uuid += "-";
-            }
-            uuid += uuid_alphabet[ dist( random_number_generator ) ];
-            uuid += uuid_alphabet[ dist( random_number_generator ) ];
+            b = static_cast< std::uint8_t >( dist( rng ) );
         }
+
+        // Set version (4) and variant (RFC 4122)
+        bytes.at( V4_INDEX ) = static_cast< std::uint8_t >( ( bytes.at( V4_INDEX ) & V4_HEX_MASK1 ) | V4_HEX_MASK2 );                     // version 4
+        bytes.at( VARIANT_INDEX ) = static_cast< std::uint8_t >( ( bytes.at( VARIANT_INDEX ) & VARIANT_HEX_MASK1 ) | VARIANT_HEX_MASK2 ); // variant 10xxxxxx
+
+        std::string uuid;
+        uuid.reserve( BYTE_RESERVATION );
+
+        for ( int index = 0; index < NUM_BYTES; ++index )
+        {
+            if ( index == FIRST_DASH_INDEX || index == SECOND_DASH_INDEX || index == THIRD_DASH_INDEX || index == FOURTH_DASH_INDEX )
+            {
+                uuid += '-';
+            }
+
+            uuid += hex_lower( bytes.at( index ) >> 4 );
+            uuid += hex_lower( bytes.at( index ) );
+        }
+
         return uuid;
     }
 } // namespace csc232
