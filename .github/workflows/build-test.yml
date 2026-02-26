@@ -1,24 +1,42 @@
 name: Build & Test
+
 on:
   push:
     paths: [ '**.cpp','**.h','CMakeLists.txt','.github/workflows/**' ]
   pull_request:
     paths: [ '**.cpp','**.h','CMakeLists.txt' ]
-permissions: { actions: read, contents: read }
-concurrency: { group: "${{ github.workflow }}-${{ github.ref }}", cancel-in-progress: true }
+
+permissions:
+  actions: read
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - name: Install Ninja and ccache
         run: |
-          sudo apt-get update && sudo apt-get install -y ninja-build ccache
+          sudo apt-get update
+          sudo apt-get install -y ninja-build ccache
+
       - name: Configure ccache
         run: |
+          mkdir -p ~/.ccache
+          # You can use a config file...
           echo "max_size = 500M" >> ~/.ccache/ccache.conf
           echo "compression = true" >> ~/.ccache/ccache.conf
+          # ...or environment variables (alternative):
+          # echo "export CCACHE_MAXSIZE=500M" >> $GITHUB_ENV
+          # echo "export CCACHE_COMPRESS=1" >> $GITHUB_ENV
+          ccache --version || true
+          ccache --show-config || true
+
       - name: Cache ccache
         uses: actions/cache@v4
         with:
@@ -26,14 +44,20 @@ jobs:
           key: ccache-${{ runner.os }}-${{ hashFiles('**/CMakeLists.txt', '**/*.cpp', '**/*.h') }}
           restore-keys: |
             ccache-${{ runner.os }}-
+
       - name: Configure (CMake)
         run: |
-          cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+          cmake -S . -B build -G Ninja \
+                -DCMAKE_BUILD_TYPE=Debug \
+                -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+
       - name: Build
         run: cmake --build build --config Debug -- -k 0
+
       - name: Test
         working-directory: build
         run: ctest --output-on-failure -C Debug
+
       - name: Upload test log on failure
         if: failure()
         uses: actions/upload-artifact@v4
@@ -41,4 +65,5 @@ jobs:
           name: ctest-logs
           path: |
             build/Testing/Temporary/LastTest.log
-            build/**/Testing/Temporary
+            build/**/Testing/Temporary/LastTest.log
+          if-no-files-found: ignore
