@@ -141,6 +141,8 @@ jobs:
       # Use the generated file in build/
       - name: Build documentation
         run: |
+          mkdir docs
+          touch docs/doxygen.console.log
           set -o pipefail
           doxygen build/Doxyfile 2>&1 | tee docs/doxygen.console.log
       - name: Fail if errors were reported
