@@ -1,10 +1,9 @@
 /**
- * CSC232 - Data Structures
- * Missouri State University, Spring 2026
- *
  * @file    csc232.h
- * @author  Jim Daehn <jdaehn@missouristate.edu>
  * @brief   Macros, libraries and definitions for use in csc232 assignments.
+ *
+ * @authors Jim Daehn <jdaehn@missouristate.edu>
+ *          // TODO: Add your name using the same format as above
  * @version 1.0.0
  * @date    01/01/2025
  *
@@ -93,9 +92,9 @@ namespace csc232
         static std::mt19937 rng( random_device( ) );
         std::uniform_int_distribution< unsigned > dist( 0, DISTRIBUTION_UPPER_BOUND );
 
-        for ( auto &b : bytes )
+        for ( auto &value : bytes )
         {
-            b = static_cast< std::uint8_t >( dist( rng ) );
+            value = static_cast< std::uint8_t >( dist( rng ) );
         }
 
         // Set version (4) and variant (RFC 4122)

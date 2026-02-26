@@ -1,10 +1,12 @@
 /**
- * CSC232 - Data Structures
- * Missouri State University, Spring 2026
+ * @file    base_test_fixture.h
+ * @brief   Google Test implementation base test fixture.
  *
- * @file      base_test_fixture.h
- * @authors   Jim Daehn <jdaehn@missouristate.edu>
- * @brief     Google Test implementation base test fixture.
+ * @author  Jim Daehn <jdaehn@missouristate.edu>
+ * @version 1.0.0
+ * @date    01/01/2025
+ *
+ * @copyright Copyright (c) 2026 James R. Daehn
  */
 
 #ifndef CSC232_BASE_TEST_FIXTURE_H

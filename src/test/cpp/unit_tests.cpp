@@ -1,10 +1,8 @@
 /**
- * CSC232 - Data Structures
- * Missouri State University, Fall 2025
- *
  * @file    unit_tests.cpp
- * @author  Jim Daehn <jdaehn@missouristate.edu>
  * @brief   Assignment unit testing for evaluation.
+ *
+ * @author  Jim Daehn <jdaehn@missouristate.edu>
  * @version 1.0.0
  * @date    12/13/25
  *
