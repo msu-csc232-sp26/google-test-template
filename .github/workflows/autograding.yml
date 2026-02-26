@@ -143,27 +143,26 @@ jobs:
         run: |
           set -o pipefail
           doxygen build/Doxyfile 2>&1 | tee docs/doxygen.console.log
-
       - name: Fail if errors were reported
         run: |
-               echo "Scanning Doxygen logs for errors…"
-               had_issues=0
-               if [ -f docs/doxygen.console.log ]; then
-               if grep -E "(error:)" -n docs/doxygen.console.log; then
-                echo "::error::Doxygen reported issues in console output."
-                had_issues=1
-               fi
-               fi
-               if [ -f docs/doxygen.warnings ] && [ -s docs/doxygen.warnings ]; then
-               echo "::group::Doxygen WARN_LOGFILE"
-               cat docs/doxygen.warnings
-               echo "::endgroup::"
-               echo "::warn::Doxygen WARN_LOGFILE is non-empty."
+          echo "Scanning Doxygen logs for errors…"
+          had_issues=0
+          if [ -f docs/doxygen.console.log ]; then
+          if grep -E "(error:)" -n docs/doxygen.console.log; then
+           echo "::error::Doxygen reported issues in console output."
+           had_issues=1
+          fi
+          fi
+          if [ -f docs/doxygen.warnings ] && [ -s docs/doxygen.warnings ]; then
+          echo "::group::Doxygen WARN_LOGFILE"
+          cat docs/doxygen.warnings
+          echo "::endgroup::"
+          echo "::warn::Doxygen WARN_LOGFILE is non-empty."
           #            had_issues=1
-               fi
-               if [ "$had_issues" -ne 0 ]; then
-               exit 1
-               fi
+          fi
+          if [ "$had_issues" -ne 0 ]; then
+          exit 1
+          fi
 
       - name: Upload HTML docs (artifact)
         if: always()
