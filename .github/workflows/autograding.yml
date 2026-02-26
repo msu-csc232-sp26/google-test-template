@@ -1,0 +1,182 @@
+name: Autograding with Linter and Unit Tests
+
+on:
+  push:
+    paths:
+      - '**.cpp'
+      - '**.h'
+      - 'CMakeLists.txt'
+      - '.clang-*'
+      - 'Doxyfile'
+      - '.github/workflows/**'
+  pull_request:
+    paths:
+      - '**.cpp'
+      - '**.h'
+      - 'CMakeLists.txt'
+      - '.clang-*'
+      - 'Doxyfile'
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+  checks: write
+  pull-requests: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  BUILD_TYPE: Debug
+
+jobs:
+  cpp-linter:
+    name: clang-tidy (cpp-linter action)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Generate compile_commands.json so clang-tidy uses real build flags
+      - name: Configure (CMake)
+        run: |
+          cmake -S . -B build -G Ninja \
+                -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} \
+                -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+
+      - name: Run cpp-linter
+        id: linter
+        uses: cpp-linter/cpp-linter-action@v2
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          version: '18'
+          style: 'file'            # use .clang-format in repo
+          tidy-checks: ''          # use .clang-tidy in repo
+          file-annotations: true
+          step-summary: true
+          database: build          # use compile_commands.json from CMake
+          files-changed-only: ${{ github.event_name == 'pull_request' }}
+          thread-comments: ${{ github.event_name == 'pull_request' && 'update' || 'off' }}
+          ignore: '.github|build|src/test/cpp|include/testing'
+
+      - name: Fail fast?!
+        if: ${{ steps.linter.outputs.checks-failed != '0' }}
+        run: |
+          echo "Some linter checks failed: ${{ steps.linter.outputs.checks-failed }}"
+          exit 1
+
+  build-and-test:
+    name: Build & Test
+    runs-on: ubuntu-latest
+    needs: cpp-linter
+    if: github.actor != 'github-classroom[bot]'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Ninja and ccache
+        run: sudo apt-get update && sudo apt-get install -y ninja-build ccache
+
+      - name: Configure ccache
+        run: |
+          echo "max_size = 500M" >> ~/.ccache/ccache.conf
+          echo "compression = true" >> ~/.ccache/ccache.conf
+
+      - name: Cache ccache
+        uses: actions/cache@v4
+        with:
+          path: ~/.ccache
+          key: ccache-${{ runner.os }}-${{ hashFiles('**/CMakeLists.txt', '**/*.cpp', '**/*.h') }}
+          restore-keys: |
+            ccache-${{ runner.os }}-
+
+      - name: Configure (CMake)
+        run: |
+          cmake -S . -B build -G Ninja \
+                -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} \
+                -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+
+      - name: Build
+        run: cmake --build build --config ${{ env.BUILD_TYPE }} -- -k 0
+
+      - name: Test
+        working-directory: build
+        run: ctest --output-on-failure -C ${{ env.BUILD_TYPE }}
+
+      - name: Upload test log on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ctest-logs
+          path: |
+            build/Testing/Temporary/LastTest.log
+            build/**/Testing/Temporary/LastTest.log
+          if-no-files-found: ignore
+
+  doxygen:
+    name: Doxygen docs (warnings are errors)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Doxygen (and Graphviz optional)
+        run: |
+          if ! command -v doxygen >/dev/null 2>&1; then
+            sudo apt-get update
+            sudo apt-get install -y doxygen graphviz
+          fi
+          doxygen -v
+
+      - name: Build documentation
+        run: |
+          set -o pipefail
+          doxygen Doxyfile 2>&1 | tee docs/doxygen.console.log
+
+      - name: Fail if warnings or errors were reported
+        run: |
+          echo "Scanning Doxygen logs for warnings/errors…"
+          had_issues=0
+
+          if [ -f docs/doxygen.console.log ]; then
+            if grep -E "(warning:|error:)" -n docs/doxygen.console.log; then
+              echo "::error::Doxygen reported issues in console output."
+              had_issues=1
+            fi
+          fi
+
+          if [ -f docs/doxygen.warnings ]; then
+            if [ -s docs/doxygen.warnings ]; then
+              echo "::group::Doxygen WARN_LOGFILE"
+              cat docs/doxygen.warnings
+              echo "::endgroup::"
+              echo "::error::Doxygen WARN_LOGFILE is non-empty."
+              had_issues=1
+            fi
+          fi
+
+          if [ "$had_issues" -ne 0 ]; then
+            echo "Failing due to Doxygen warnings/errors."
+            exit 1
+          else
+            echo "No Doxygen warnings/errors detected."
+          fi
+
+      - name: Upload HTML docs (artifact)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: doxygen-html
+          path: docs/html
+          if-no-files-found: warn
+
+      - name: Upload Doxygen logs (artifact)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: doxygen-logs
+          path: |
+            docs/doxygen.console.log
+            docs/doxygen.warnings
+          if-no-files-found: ignore
