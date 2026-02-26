@@ -46,7 +46,7 @@ TEST_F( Task1TestFixture, RewriteThisTest )
 TEST( Task1Primer, ItIsNotReady )
 {
     std::cerr << "Task 1 is not ready for evaluation; please toggle the TEST_TASK1 macro to TRUE\n";
-    SUCCEED( );
+    FAIL( );
 }
 #endif // TEST_TASK_1
 
