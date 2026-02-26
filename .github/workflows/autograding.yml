@@ -81,6 +81,8 @@ jobs:
 
       - name: Configure ccache
         run: |
+          mkdir ~/.ccache
+          touch ~/.ccache.conf
           echo "max_size = 500M" >> ~/.ccache/ccache.conf
           echo "compression = true" >> ~/.ccache/ccache.conf
 
