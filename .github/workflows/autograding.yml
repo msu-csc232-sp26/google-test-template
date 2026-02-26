@@ -59,7 +59,7 @@ jobs:
           step-summary: true
           database: build          # use compile_commands.json from CMake
           files-changed-only: ${{ github.event_name == 'pull_request' }}
-          thread-comments: ${{ github.event_name == 'pull_request' && 'update' || 'off' }}
+          thread-comments: ${{ github.event_name == 'pull_request' && 'update' || 'false' }}
           ignore: '.github|build|src/test/cpp|include/testing'
 
       - name: Fail fast?!
