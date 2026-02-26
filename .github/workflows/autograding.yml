@@ -123,46 +123,46 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install Doxygen (and Graphviz optional)
+      - name: Install Doxygen & Graphviz
         run: |
           if ! command -v doxygen >/dev/null 2>&1; then
             sudo apt-get update
             sudo apt-get install -y doxygen graphviz
+          else
+            sudo apt-get update && sudo apt-get install -y graphviz
           fi
           doxygen -v
 
+      # Configure with CMake so the Doxyfile gets generated into build/
+      - name: Configure (CMake)
+        run: |
+          cmake -S . -B build -G Ninja
+
+      # Use the generated file in build/
       - name: Build documentation
         run: |
           set -o pipefail
-          doxygen Doxyfile 2>&1 | tee docs/doxygen.console.log
+          doxygen build/Doxyfile 2>&1 | tee docs/doxygen.console.log
 
       - name: Fail if warnings or errors were reported
         run: |
           echo "Scanning Doxygen logs for warnings/errors…"
           had_issues=0
-
           if [ -f docs/doxygen.console.log ]; then
             if grep -E "(warning:|error:)" -n docs/doxygen.console.log; then
               echo "::error::Doxygen reported issues in console output."
               had_issues=1
             fi
           fi
-
-          if [ -f docs/doxygen.warnings ]; then
-            if [ -s docs/doxygen.warnings ]; then
-              echo "::group::Doxygen WARN_LOGFILE"
-              cat docs/doxygen.warnings
-              echo "::endgroup::"
-              echo "::error::Doxygen WARN_LOGFILE is non-empty."
-              had_issues=1
-            fi
+          if [ -f docs/doxygen.warnings ] && [ -s docs/doxygen.warnings ]; then
+            echo "::group::Doxygen WARN_LOGFILE"
+            cat docs/doxygen.warnings
+            echo "::endgroup::"
+            echo "::error::Doxygen WARN_LOGFILE is non-empty."
+            had_issues=1
           fi
-
           if [ "$had_issues" -ne 0 ]; then
-            echo "Failing due to Doxygen warnings/errors."
             exit 1
-          else
-            echo "No Doxygen warnings/errors detected."
           fi
 
       - name: Upload HTML docs (artifact)
