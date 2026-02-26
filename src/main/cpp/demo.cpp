@@ -1,10 +1,8 @@
 /**
- * CSC232 - Data Structures
- * Missouri State University, Spring 2026
- *
  * @file    demo.cpp
- * @author  Jim Daehn <jdaehn@missouristate.edu>
  * @brief   Entry-point for demo target.
+ *
+ * @author  Jim Daehn <jdaehn@missouristate.edu>
  * @version 1.0.0
  * @date    01/01/2025
  *
