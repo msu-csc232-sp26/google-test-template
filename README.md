@@ -1,5 +1,7 @@
 # LHWn - Title
 
+[![Autograding](https://github.com/msu-csc232-sp26/lab07/actions/workflows/autograding.yml/badge.svg?branch=develop)](https://github.com/msu-csc232-sp26/lab07/actions/workflows/autograding.yml)
+
 _A quick blurb or sub-title text_
 
 ## Background
